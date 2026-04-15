@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="alert alert-info mb-4">
+        <h4><i class="bi bi-telegram"></i> Привязка Telegram аккаунта</h4>
+        <p class="mb-0">Вы выбрали Telegram в качестве источника данных. Для продолжения необходимо привязать ваш Telegram аккаунт.</p>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Привязка Telegram аккаунта</h4>
+                </div>
+                <div class="card-body">
+                    {% if current_user.is_telegram_verified %}
+                    <div class="alert alert-success">
+                        <h5><i class="bi bi-check-circle-fill"></i> Ваш Telegram привязан!</h5>
+                        <p>ID: {{ current_user.telegram_id }}</p>
+                        <button id="unlinkTelegram" class="btn btn-sm btn-danger">Отвязать аккаунт</button>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-warning">
+                        <h5><i class="bi bi-exclamation-triangle-fill"></i> Требуется привязка Telegram</h5>
+                        <p>Для доступа к панели управления необходимо привязать Telegram аккаунт</p>
+                    </div>
+
+                    <div class="steps">
+                        <div class="step mb-4 p-3 border rounded">
+                            <h5>Шаг 1: Получить код верификации</h5>
+                            <button id="getCodeBtn" class="btn btn-primary">
+                                <i class="bi bi-key-fill"></i> Сгенерировать код
+                            </button>
+                            <div id="codeDisplay" class="mt-3" style="display: none;">
+                                <div class="alert alert-info">
+                                    <h6>Ваш код подтверждения:</h6>
+                                    <div class="d-flex align-items-center">
+                                        <span id="verificationCode" class="fs-3 fw-bold me-3"></span>
+                                        <small>Действует до: <span id="codeExpires"></span></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="step mb-4 p-3 border rounded">
+                            <h5>Шаг 2: Ввести код в Telegram</h5>
+                            <ol>
+                                <li>Откройте <a href="https://t.me/DSCollectorBot" target="_blank">бота в Telegram</a></li>
+                                <li>Отправьте команду: <code>/verify ВАШ_КОД</code></li>
+                            </ol>
+                        </div>
+
+                        <div class="step p-3 border rounded">
+                            <h5>Шаг 3: Проверить статус</h5>
+                            <button id="checkStatusBtn" class="btn btn-success">
+                                <i class="bi bi-arrow-repeat"></i> Проверить привязку
+                            </button>
+                            <div id="statusResult" class="mt-3"></div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Генерация кода
+    document.getElementById('getCodeBtn')?.addEventListener('click', async function() {
+        this.disabled = true;
+        this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Генерация...';
+        
+        try {
+            const response = await fetch('generate_verification_code', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                document.getElementById('verificationCode').textContent = data.code;
+                document.getElementById('codeExpires').textContent = 
+                    new Date(data.expires_at).toLocaleTimeString();
+                document.getElementById('codeDisplay').style.display = 'block';
+            } else {
+                alert('Ошибка: ' + data.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Произошла ошибка при генерации кода');
+        } finally {
+            this.disabled = false;
+            this.innerHTML = '<i class="bi bi-key-fill"></i> Сгенерировать код';
+        }
+    });
+
+    // Проверка статуса
+    document.getElementById('checkStatusBtn')?.addEventListener('click', async function() {
+        this.disabled = true;
+        this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Проверка...';
+        
+        try {
+            const response = await fetch('/check_verification');
+            const data = await response.json();
+            
+            const statusDiv = document.getElementById('statusResult');
+            if (data.is_verified) {
+                statusDiv.innerHTML = `
+                    <div class="alert alert-success d-flex align-items-center">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        <div>Telegram успешно привязан! Перенаправляем...</div>
+                    </div>
+                `;
+                setTimeout(() => window.location.reload(), 2000);
+            } else {
+                statusDiv.innerHTML = `
+                    <div class="alert alert-warning d-flex align-items-center">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <div>Привязка еще не подтверждена</div>
+                    </div>
+                `;
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        } finally {
+            this.disabled = false;
+            this.innerHTML = '<i class="bi bi-arrow-repeat"></i> Проверить привязку';
+        }
+    });
+
+    // Отвязка Telegram
+    document.getElementById('unlinkTelegram')?.addEventListener('click', async function() {
+        if (confirm('Вы уверены, что хотите отвязать Telegram аккаунт?')) {
+            this.disabled = true;
+            this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Обработка...';
+            
+            try {
+                const response = await fetch('/unlink_telegram', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                if (response.ok) {
+                    window.location.reload();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+    });
+
+    // Автопроверка статуса если есть активный код
+    if (document.getElementById('codeDisplay').style.display === 'block') {
+        setInterval(async () => {
+            const response = await fetch('/check_verification');
+            const data = await response.json();
+            if (data.is_verified) {
+                window.location.reload();
+            }
+        }, 5000); // Проверка каждые 5 секунд
+    }
+});
+</script>
+{% endblock %}

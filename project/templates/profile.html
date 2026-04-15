@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4>Профиль пользователя</h4>
+                </div>
+                <div class="card-body">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }} alert-dismissible fade show">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <form method="POST" action="{{ url_for('profile') }}">
+                        {{ form.hidden_tag() }}
+
+                        <div class="mb-3">
+                            <label class="form-label">Имя</label>
+                            {{ form.name(class="form-control", value=user.name) }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            {{ form.email(class="form-control", value=user.email) }}
+                        </div>
+
+                        <hr>
+
+                        <h5>Смена пароля</h5>
+                        <div class="mb-3">
+                            <label class="form-label">Текущий пароль</label>
+                            {{ form.current_password(class="form-control") }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Новый пароль</label>
+                            {{ form.new_password(class="form-control") }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Подтвердите новый пароль</label>
+                            {{ form.confirm_password(class="form-control") }}
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            {{ form.submit(class="btn btn-primary") }}
+                        </div>
+                    </form>
+
+                    <hr>
+
+                    <div class="mt-3">
+                        <h5>Telegram</h5>
+                        {% if user.is_telegram_verified %}
+                            <p class="text-success">
+                                <i class="bi bi-check-circle-fill"></i>
+                                Telegram привязан (ID: {{ user.telegram_id }})
+                            </p>
+                            <form action="{{ url_for('unlink_telegram') }}" method="POST">
+                                <button type="submit" class="btn btn-danger">Отвязать Telegram</button>
+                            </form>
+                        {% else %}
+                            <p class="text-warning">
+                                <i class="bi bi-exclamation-triangle-fill"></i>
+                                Telegram не привязан
+                            </p>
+                            <a href="{{ url_for('telegram_connect') }}" class="btn btn-sm btn-primary">
+                                Привязать Telegram
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+</body>
+</html>

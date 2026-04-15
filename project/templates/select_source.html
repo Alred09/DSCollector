@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Выберите источник данных</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('select_source') }}">
+                        <div class="mb-3">
+                            <label class="form-label">Источник данных:</label>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="source" 
+                                       id="telegram" value="telegram" required>
+                                <label class="form-check-label" for="telegram">
+                                    <i class="bi bi-telegram"></i> Telegram
+                                </label>
+                                {% if not current_user.is_telegram_verified %}
+                                <div class="form-text text-warning">
+                                    Требуется привязка Telegram аккаунта
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="source" 
+                                       id="other" value="other">
+                                <label class="form-check-label" for="other">
+                                    <i class="bi bi-collection"></i> Другие источники
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            Продолжить
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,37 @@
+.apple_tree {
+    color: #808080;
+/* Стили для Telegram панели */
+.telegram-panel {
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    margin-bottom: 20px;
+}
+
+.telegram-panel .card {
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.telegram-panel .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.telegram-panel .badge {
+    font-size: 0.8rem;
+    padding: 5px 8px;
+}
+
+.telegram-panel .btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+.spinner-border {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    vertical-align: text-top;
+}

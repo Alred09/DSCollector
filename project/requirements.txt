@@ -1,0 +1,17 @@
+### Основные пакеты (ваши прямые зависимости)
+Flask==3.1.0
+Flask-Login==0.6.3
+Flask-WTF==1.2.2
+python-telegram-bot==22.0
+transformers==4.51.3
+torch==2.7.0  # Для GPU замените на torch==2.7.0+cu121
+sqlalchemy==2.0.40
+huggingface-hub==0.30.2
+Werkzeug==3.1.3
+WTForms==3.2.1
+blinker==1.9.0  # Обязательный для Flask
+email-validator==2.2.0
+
+### Автоматические зависимости (пусть pip сам разбирается)
+### Эти пакеты pip установит сам, даже если не указаны явно:
+### numpy, tqdm, requests, Jinja2, itsdangerous, tokenizers, etc.

@@ -721,7 +721,7 @@ import threading
 import os
 
 def run_bot():
-    from project.data.db_session import global_init
+    from data.db_session import global_init
     import os
     import asyncio
 

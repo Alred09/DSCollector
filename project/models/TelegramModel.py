@@ -1,5 +1,5 @@
 from sqlalchemy import Column, String, Boolean, Integer, DateTime
-from project.data.db_session import Base
+from data.db_session import Base
 
 
 class TelegramChat(Base):

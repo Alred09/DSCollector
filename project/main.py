@@ -732,7 +732,7 @@ if __name__ == '__main__':
 
     bot_process = Process(target=run_bot)
     bot_process.start()
-    port = int(os.environ.get("PORT", 5000))
+    port = int(os.environ.get("PORT", 4000))
     app.run(port=port, host='0.0.0.0')
 
     bot_process.terminate()

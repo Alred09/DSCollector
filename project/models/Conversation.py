@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean
-from project.data.db_session import Base
+from data.db_session import Base
 
 
 class Conversation(Base):

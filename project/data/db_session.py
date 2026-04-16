@@ -24,7 +24,7 @@ def global_init(db_file):
     __factory = orm.sessionmaker(bind=engine)
 
     # Явный импорт моделей
-    from project.models.__all_models import User, TelegramChat, TextData
+    from models.__all_models import User, TelegramChat, TextData
 
     Base.metadata.create_all(engine)
 

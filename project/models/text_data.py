@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, DateTime, Text, Float, ForeignKey
-from project.data.db_session import Base
+from data.db_session import Base
 
 
 class TextData(Base):

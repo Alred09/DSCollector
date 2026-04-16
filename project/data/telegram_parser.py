@@ -502,5 +502,5 @@ class TelegramBot:
             app.add_handler(handler)
 
         self.logger.info("Бот запущен и готов к работе!")
-        app.run_polling()
+        app.run_polling(stop_signals=None)
 

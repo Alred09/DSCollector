@@ -4,18 +4,18 @@ from functools import lru_cache
 from multiprocessing import Process
 from functools import wraps
 from sqlalchemy.exc import SQLAlchemyError
-from project.models.Conversation import Conversation
+from models.Conversation import Conversation
 
 # 1. Сначала импортируем ВСЕ модели
-from project.models.users import User
-from project.models.text_data import TextData
-from project.models.TelegramModel import TelegramChat
+from models.users import User
+from models.text_data import TextData
+from models.TelegramModel import TelegramChat
 
 
 # 2. Потом всё остальное
-from project.data.db_session import create_session, global_init
-from project.data.telegram_parser import TelegramBot
-from project.forms.profile_form import ProfileForm
+from data.db_session import create_session, global_init
+from data.telegram_parser import TelegramBot
+from forms.profile_form import ProfileForm
 from forms.user import RegisterForm, LoginForm
 import os
 import json

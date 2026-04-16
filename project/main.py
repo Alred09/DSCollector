@@ -717,22 +717,25 @@ def bot_control():
     return "Неизвестное действие", 400
 
 
+import threading
+import os
+
 def run_bot():
-    from project.data.db_session import global_init
-    import os
+    from data.db_session import global_init
 
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     DB_PATH = os.path.join(BASE_DIR, "db", "blogs.db")
 
     global_init(DB_PATH)
-    bot.run()
 
+    print("BOT STARTING...")  # чтобы видеть в логах
+    bot.run()  # или bot.polling() если у тебя так
 
 if __name__ == '__main__':
+    # запускаем бота в отдельном потоке
+    bot_thread = threading.Thread(target=run_bot)
+    bot_thread.start()
 
-    bot_process = Process(target=run_bot)
-    bot_process.start()
+    # запускаем Flask
     port = int(os.environ.get("PORT", 4000))
-    app.run(port=port, host='0.0.0.0')
-
-    bot_process.terminate()
+    app.run(host='0.0.0.0', port=port)

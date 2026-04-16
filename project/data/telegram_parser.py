@@ -8,14 +8,14 @@ from telegram.ext import (
 )
 from datetime import datetime, timedelta
 from .db_session import create_session
-from project.models.TelegramModel import TelegramChat
+from models.TelegramModel import TelegramChat
 import logging
 import random
 import string
 from typing import Dict, Optional
-from project.models.users import User
-from project.models.text_data import TextData
-from project.models.Conversation import Conversation
+from models.users import User
+from models.text_data import TextData
+from models.Conversation import Conversation
 
 
 class TelegramBot:

@@ -721,15 +721,22 @@ import threading
 import os
 
 def run_bot():
-    from data.db_session import global_init
+    from project.data.db_session import global_init
+    import os
+    import asyncio
 
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     DB_PATH = os.path.join(BASE_DIR, "db", "blogs.db")
 
     global_init(DB_PATH)
 
-    print("BOT STARTING...")  # чтобы видеть в логах
-    bot.run()  # или bot.polling() если у тебя так
+    print("BOT STARTING...")
+
+    # 🔥 ВАЖНО: создаём event loop
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+
+    bot.run()
 
 if __name__ == '__main__':
     # запускаем бота в отдельном потоке
